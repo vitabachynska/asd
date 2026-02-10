@@ -1,31 +1,33 @@
 package packageFiles;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         //run();
-        run2();
+        //run2();
+        run3();
     }
 
     static void run() {
-        PaymentMethod[] methods = {
-                new CardPayment(),
-                new PayPalPayment()
-        };
+        PaymentMethod card = new CardPayment();
+        PaymentMethod paypal = new PayPalPayment();
 
-        PaymentProcessor processor = new PaymentProcessor();
-        int amount = 10;
+        card.pay(100);
+        paypal.pay(300);
 
-        for (PaymentMethod method : methods) {
-            processor.process(method, amount);
-        }
+        card.payWithFee(100, 10);
+        paypal.payWithFee(200, 10);
     }
 
     static void run2() {
         ReportGenerator report = new DailyReport();
         report.generate();
 
-        }
+    }
+
+    static void run3() {
+        MultiNotifier notifier = new MultiNotifier();
+        notifier.send("Hello world");
+
+    }
 }
 
