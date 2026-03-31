@@ -1,9 +1,6 @@
 package packageFiles;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -18,10 +15,18 @@ public class Main {
                 new Book("Book 2", 2019, Arrays.asList("tag 2", "tag 3", "tag 1")),
                 new Book("Book 4", 2022, Arrays.asList("tag 1", "tag 3"))
         );
+        List<Sale> sales = Arrays.asList(
+                new Sale("B-Product", 2000, "user1@gmail.com"),
+                new Sale("C-Product", 3000, "user2@gmail.com"),
+                new Sale("A-Product", 1500, "user2@gmail.com"),
+                new Sale("C-Product", 3000, "user1@gmail.com"),
+                new Sale("B-Product", 2000, "user3@gmail.com")
+        );
         //run1(books);
         //run2(books);
-        //run3();
-        run4();
+        //run3(sales);
+        //run4();
+        run5(books, sales);
     }
 
     private static void run1(List<Book> books) {
@@ -57,15 +62,7 @@ public class Main {
 
         System.out.println("Топ-" + N + " тегів: " + topTags);
     }
-    private static void run3() {
-        List<Sale> sales = Arrays.asList(
-                new Sale("Product 2", 2000, "user1@gmail.com"),
-                new Sale("Product 3", 3000, "user2@gmail.com"),
-                new Sale("Product 1", 1000, "user2@gmail.com"),
-                new Sale("Product 3", 3000, "user1@gmail.com"),
-                new Sale("Product 2", 2000, "user3@gmail.com")
-        );
-
+    private static void run3(List<Sale> sales) {
         Map<String, Integer> productRevenue = sales.stream()
                 .collect(Collectors.toMap(
                         Sale::getProduct,
@@ -108,4 +105,21 @@ public class Main {
 
         System.out.println("Всі повідомлення про помилки: " + allErrors);
     }
+
+    private static void run5(List<Book> books, List<Sale> sales){
+        Map<Boolean, List<Book>> recentVsOld = books.stream()
+                .collect(Collectors.partitioningBy(b -> b.getYear() > 2015));
+        System.out.println("Нові книги(після 2015): " + recentVsOld.get(true));
+        System.out.println("Старі книги(до 2015): " + recentVsOld.get(false));
+
+        TreeMap<String, Integer> sortedRevenue = sales.stream()
+                .collect(Collectors.toMap(
+                        Sale::getProduct,
+                        Sale::getAmount,
+                        Integer::sum,
+                        TreeMap::new));
+
+        System.out.println("\nВідсортована виручка: "+sortedRevenue);
+    }
+
 }
