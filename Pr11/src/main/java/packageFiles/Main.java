@@ -6,33 +6,34 @@ import java.util.stream.Collectors;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
+    public record Book(String title, String author, int year, List<String> tags) {}
+    static List<Book> books = List.of(
+            new Book("Clean Code", "Robert Martin", 2008, List.of("clean", "practice", "java")),
+            new Book("Effective Java", "Joshua Bloch", 2018, List.of("java", "best", "api")),
+            new Book("Modern Java", "Nicolai Parlog", 2020, List.of("java", "streams", "records")),
+            new Book("Java Concurrency", "Brian Goetz", 2006, List.of("concurrency", "java"))
+    );
+
+    public record Sale(String customerEmail, String product, int cents) {}
+    static List<Sale> sales = List.of(
+            new Sale("a@ex.com", "Tea", 120),
+            new Sale("b@ex.com", "Cake", 200),
+            new Sale("a@ex.com", "Tea", 120),
+            new Sale("c@ex.com", "Coffee", 150),
+            new Sale("b@ex.com", "Cake", 200)
+    );
     static void main() {
-        List<Book> books = Arrays.asList(
-                new Book("Book 3", 2017, Arrays.asList("tag 2", "tag 3")),
-                new Book("Book 1", 2007, Arrays.asList("tag 5", "tag 7")),
-                new Book("Book 6", 2005, Arrays.asList("tag 6", "tag 3")),
-                new Book("Book 5", 2025, Arrays.asList("tag 8", "tag 3", "tag 4")),
-                new Book("Book 2", 2019, Arrays.asList("tag 2", "tag 3", "tag 1")),
-                new Book("Book 4", 2022, Arrays.asList("tag 1", "tag 3"))
-        );
-        List<Sale> sales = Arrays.asList(
-                new Sale("B-Product", 2000, "user1@gmail.com"),
-                new Sale("C-Product", 3000, "user2@gmail.com"),
-                new Sale("A-Product", 1500, "user2@gmail.com"),
-                new Sale("C-Product", 3000, "user1@gmail.com"),
-                new Sale("B-Product", 2000, "user3@gmail.com")
-        );
         //run1(books);
         //run2(books);
-        //run3(sales);
+        run3(sales);
         //run4();
-        run5(books, sales);
+        //run5(books, sales);
     }
 
     private static void run1(List<Book> books) {
         List<String> result = books.stream()
-                .filter(book -> book.getYear() > 2015)
-                .map(book -> book.getTitle().toUpperCase())
+                .filter(book -> book.year() > 2015)
+                .map(book -> book.title().toUpperCase())
                 .sorted()
                 .limit(3)
                 .collect(Collectors.toList());
@@ -41,7 +42,7 @@ public class Main {
 
     private static void run2(List<Book> books) {
         List<String> uniqueTags = books.stream()
-                .flatMap(b -> b.getTags().stream())
+                .flatMap(b -> b.tags().stream())
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -50,7 +51,7 @@ public class Main {
 
         int N = 3;
         Map<String, Long> tagFrequency = books.stream()
-                .flatMap(b -> b.getTags().stream())
+                .flatMap(b -> b.tags().stream())
                 .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
 
         List<String> topTags = tagFrequency.entrySet().stream()
@@ -65,8 +66,8 @@ public class Main {
     private static void run3(List<Sale> sales) {
         Map<String, Integer> productRevenue = sales.stream()
                 .collect(Collectors.toMap(
-                        Sale::getProduct,
-                        Sale::getAmount,
+                        Sale::product,
+                        Sale::cents,
                         Integer::sum
                 ));
 
@@ -74,7 +75,7 @@ public class Main {
 
         Map<String, Long> transactionsPerCustomer = sales.stream()
                 .collect(Collectors.groupingBy(
-                        Sale::getEmail,
+                        Sale::customerEmail,
                         Collectors.counting()
                 ));
 
@@ -108,14 +109,14 @@ public class Main {
 
     private static void run5(List<Book> books, List<Sale> sales){
         Map<Boolean, List<Book>> recentVsOld = books.stream()
-                .collect(Collectors.partitioningBy(b -> b.getYear() > 2015));
+                .collect(Collectors.partitioningBy(b -> b.year() > 2015));
         System.out.println("Нові книги(після 2015): " + recentVsOld.get(true));
         System.out.println("Старі книги(до 2015): " + recentVsOld.get(false));
 
         TreeMap<String, Integer> sortedRevenue = sales.stream()
                 .collect(Collectors.toMap(
-                        Sale::getProduct,
-                        Sale::getAmount,
+                        Sale::product,
+                        Sale::cents,
                         Integer::sum,
                         TreeMap::new));
 
