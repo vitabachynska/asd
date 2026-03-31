@@ -19,7 +19,9 @@ public class Main {
                 new Book("Book 4", 2022, Arrays.asList("tag 1", "tag 3"))
         );
         //run1(books);
-        run2(books);
+        //run2(books);
+        //run3();
+        run4();
     }
 
     private static void run1(List<Book> books) {
@@ -47,12 +49,63 @@ public class Main {
                 .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));
 
         List<String> topTags = tagFrequency.entrySet().stream()
-                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()) // Спадання частоти
-                        .thenComparing(Map.Entry.comparingByKey())) // При рівності — за назвою (A-Z)
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder())
+                        .thenComparing(Map.Entry.comparingByKey()))
                 .limit(N)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         System.out.println("Топ-" + N + " тегів: " + topTags);
+    }
+    private static void run3() {
+        List<Sale> sales = Arrays.asList(
+                new Sale("Product 2", 2000, "user1@gmail.com"),
+                new Sale("Product 3", 3000, "user2@gmail.com"),
+                new Sale("Product 1", 1000, "user2@gmail.com"),
+                new Sale("Product 3", 3000, "user1@gmail.com"),
+                new Sale("Product 2", 2000, "user3@gmail.com")
+        );
+
+        Map<String, Integer> productRevenue = sales.stream()
+                .collect(Collectors.toMap(
+                        Sale::getProduct,
+                        Sale::getAmount,
+                        Integer::sum
+                ));
+
+        System.out.println("Виручка за продуктами: " + productRevenue);
+
+        Map<String, Long> transactionsPerCustomer = sales.stream()
+                .collect(Collectors.groupingBy(
+                        Sale::getEmail,
+                        Collectors.counting()
+                ));
+
+        System.out.println("Покупок на клієнта: " + transactionsPerCustomer);
+    }
+    private static void run4(){
+        List<Result> results = Arrays.asList(
+                new Success("Success 3"),
+                new Failure("Failure 2"),
+                new Success("Success 1"),
+                new Failure("Failure 1"),
+                new Success("Success 2")
+        );
+
+        Map<Boolean, Long> counts = results.stream()
+                .collect(Collectors.partitioningBy(
+                        res -> res instanceof Success,
+                        Collectors.counting()
+                ));
+
+        System.out.println("Кількість успіхів: " + counts.get(true));
+        System.out.println("Кількість помилок: " + counts.get(false));
+
+        List<String> allErrors = results.stream()
+                .filter(res -> res instanceof Failure)
+                .map(res -> ((Failure) res).error())
+                .collect(Collectors.toList());
+
+        System.out.println("Всі повідомлення про помилки: " + allErrors);
     }
 }
