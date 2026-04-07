@@ -34,11 +34,10 @@ public class PaymentLoader {
     private static Payment parseLine(String line) {
         String[] parts = line.split(",");
         if (parts.length != 4) throw new IllegalArgumentException();
-
         return new Payment(
                 Long.parseLong(parts[0].trim()),
                 parts[1].trim(),
-                PaymentStatus.valueOf(parts[2].trim().toUpperCase()),
+                PaymentStatus.valueOf(parts[2].trim()),
                 Long.parseLong(parts[3].trim())
         );
     }

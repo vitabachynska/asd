@@ -7,10 +7,10 @@ import java.nio.file.Path;
 public class Main {
     static void main() throws IOException {
         //run1();
-        //run2();
+        run2();
         //run3();
         //run4();
-        run5();
+        //run5();
     }
 
 private static void run1(){
@@ -69,30 +69,40 @@ private static void run3() throws IOException {
 
         try {
             Path p2 = PathSafety.safeResolve(base, "../secret.txt");
-            System.out.println("✅ Дозволено: " + p2);
+            System.out.println("Дозволено: " + p2);
         } catch (IllegalArgumentException e) {
             System.err.println("Безпека спрацювала: " + e.getMessage());
         }
     }
     private static void run5() throws IOException {
-        Path binFile = Path.of("src", "main", "resources", "status.bin");
-        int fileSize = 10;
-        int targetIndex = 4;
-        byte newStatus = 1;
+        try {
+            Path binFile = Path.of("src", "main", "resources", "status.bin");
+            //StatusFile.printAllBytes(binFile);
 
-        java.nio.file.Files.write(binFile, new byte[fileSize]);
-        System.out.println("Файл створено, заповнено нулями");
-        StatusFile.printAllBytes(binFile);
+            int nBytes = 10;
+            int targetIndex = 4;
+            byte newStatus = 1;
+            Files.write(binFile, new byte[nBytes]);
+            System.out.println("Файл status.bin створено");
+            StatusFile.printAllBytes(binFile);
 
-        StatusFile.updateStatus(binFile, targetIndex, newStatus);
+            StatusFile.updateStatus(binFile, targetIndex, newStatus);
+            System.out.println("\nОновлено байт за індексом " + targetIndex);
 
-        byte result = StatusFile.readStatus(binFile, targetIndex);
-        System.out.println("Результат читання за індексом " + targetIndex + ": " + result);
+            byte result = StatusFile.readStatus(binFile, targetIndex);
+            System.out.println("Прочитане значення з файлу за цим iндексом: " + result);
 
-        if (result == newStatus) {
-            System.out.println("Байт змінено");
+            if (result == newStatus) {
+                System.out.println("Байт успішно змінено");
+            } else {
+                System.out.println("Помилка");
+            }
+            StatusFile.printAllBytes(binFile);
+
+        } catch (IOException e) {
+            System.err.println("Сталася помилка при роботі з файлом: " + e.getMessage());
         }
-        StatusFile.printAllBytes(binFile);
+
     }
 }
 
