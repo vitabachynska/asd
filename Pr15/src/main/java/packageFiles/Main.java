@@ -4,14 +4,13 @@ package packageFiles;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //run1();
+        run1();
         //run2();
-        run3();
+        //run3();
     }
 
     private static void run1() {
-        Class<?> clazz = Book.class;
-        ClassInfoPrinter.print(clazz);
+        ClassInfoPrinter.print();
     }
 
     private static void run2() {

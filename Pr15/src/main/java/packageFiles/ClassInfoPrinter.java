@@ -6,7 +6,8 @@ import java.util.Arrays;
 
 public class ClassInfoPrinter {
 
-    public static void print(Class<?> clazz) {
+    public static void print() {
+        Class<?> clazz = Book.class;
         System.out.println("getName(): " + clazz.getName());
         System.out.println("getSuperclass(): " + clazz.getSuperclass());
         System.out.println("getInterfaces(): " + Arrays.toString(clazz.getInterfaces()));

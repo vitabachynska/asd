@@ -28,7 +28,7 @@ public class StepRunner {
                 m.setAccessible(true);
                 m.invoke(target);
             } catch (InvocationTargetException e) {
-                throw new StepExecutionException("Помилка під час виконання кроку: " + m.getName(), e.getCause());
+                throw new StepExecutionException("Помилка під час виконання: " + m.getName(), e.getCause());
             } catch (IllegalAccessException e) {
                 throw new StepExecutionException("Немає доступу до методу: " + m.getName(), e);
             }
